@@ -1,0 +1,139 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Auth;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use DateTime;
+use App\User;
+use App\Event;
+use App\Interest;
+use App\Comment;
+
+class EventController extends Controller
+{
+	function getHistory(){
+		self::expireEvents();
+		$events = Auth::user()->events()->where('expired', '1')->orderBy('start_time', 'asc')->get();
+		return view('user.events.history', compact('events'));
+	}
+	function getJoinedEvents(){
+		self::expireEvents();
+		$events = Auth::user()->events()->where('expired', '0')->orderBy('start_time', 'asc')->get();
+		return view('user.events.joined', compact('events'));
+	}
+
+	function getJoinEvent($id)
+	{
+		$event = Event::find($id);
+		if(!$event)
+			return redirect(route('index'));
+		if($event->expired)
+			return redirect(route('index'));
+		if(!Auth::user()->events->contains($event->id))
+		{
+			foreach(Auth::user()->events()->where('expired','0') as $e)
+			{
+				if(strtotime($e->date.' '.$e->end_time )> strtotime($event->date.' '.$event->start_time))
+					return redirect(route('index'));
+			}
+			$event->users()->attach(Auth::user()->id);
+		}
+		return redirect()->back();
+	}
+	function getUnjoinEvent($id)
+	{
+		$event = Event::find($id);
+		if(!$event)
+			return redirect(route('index'));
+		if($event->expired)
+			return redirect(route('index'));
+		Auth::user()->events()->detach($event->id);
+		return redirect(route('index'));
+	}
+	function getEvent($id){
+		$event = Event::find($id);
+		if(!$event)
+			return redirect(route('index'));
+		$comments = Comment::where('event_id', $event->id)->orderBy('created_at', 'desc')->paginate(10);
+		if($event->expired)
+			return view('user.events.expired', compact('event', 'comments'));
+		else
+			return view('user.event', compact('event', 'comments'));
+	}
+
+	function getCreateEvent()
+	{
+		return view('user.events.create');
+	}
+
+	function postCreateEvent(Request $request)
+	{
+		$this->validate($request, [
+			'title' => 'required',
+			'description' => 'required',
+			'start_time' => 'required',
+			'end_time' => 'required',
+			'date' => 'required',
+			'interests' => 'required',
+			'location' => 'required',
+			]);
+		$errors = [];
+		if(!self::validateDate($request->get('start_time'),'H:i'))
+			$errors[] = "Start time is not valid";
+		if(!self::validateDate($request->get('end_time'),'H:i'))
+			$errors[] = "End time is not valid";
+		if(!self::validateDate($request->get('date'),'Y-m-d'))
+			$errors[] = "Date  is not valid";
+		if(strtotime($request->get('start_time')) >= strtotime($request->get('end_time')))
+			$errors[] = "The start time cannot be less than the end Time";
+		if(strtotime($request->get('date').' '.$request->get('start_time')) <= time())
+			$errors[] = "Cannot start with a time less than now ";
+
+		foreach(Auth::user()->events as $e)
+		{
+			if(strtotime($e->date.' '.$e->end_time )> strtotime($request->get('date').' '.$request->get('start_time')))
+				$errors[] = "Cannot start an event while you are participating in another one";
+		}
+
+		if(count($errors) > 0)
+			return redirect()->back()->withErrors($errors);
+		$icon = $request->get('icon','unknown');
+		if(in_array($icon, ['food','drink','movie','walk','games','unknown']))
+			$icon = 'images/'.$icon.'.png';
+		else{
+			$icon = 'images/unknown.png';
+		}
+		$event = Event::create([
+			'title' => $request->get('title'),
+			'description' => $request->get('description'),
+			'start_time' => $request->get('start_time'),
+			'end_time' => $request->get('end_time'),
+			'date' => date("d.m.Y", strtotime($request->get('date'))),
+			'location' => $request->get('location',''),
+			'icon' => $icon,
+			]);
+		$event->users()->attach(Auth::user()->id);
+		$interests = explode(',', $request->get('interests'));
+		foreach($interests as $interest)
+		{
+			$i = Interest::create(['name' => trim($interest)]);
+			$event->interests()->save($i);
+		}
+		return redirect(route('index'));
+	}
+	static public function validateDate($date,$format)
+	{
+		return (DateTime::createFromFormat($format, $date) !== false);
+	}
+	function expireEvents(){
+		$events = Event::where('expired', '0')->where('start_time' , '<=', date('H:i'))->where('date', '<=', date('d.m.Y'))->get();
+		foreach($events as $e)
+		{
+			$e->expired = 1;
+			$e->save();
+		}
+		return;
+	}
+}
