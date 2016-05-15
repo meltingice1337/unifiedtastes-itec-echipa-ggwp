@@ -17,10 +17,10 @@ class Handler extends ExceptionHandler
      * @var array
      */
     protected $dontReport = [
-        AuthorizationException::class,
-        HttpException::class,
-        ModelNotFoundException::class,
-        ValidationException::class,
+    AuthorizationException::class,
+    HttpException::class,
+    ModelNotFoundException::class,
+    ValidationException::class,
     ];
 
     /**
@@ -45,6 +45,10 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $e)
     {
+        if($e instanceof NotFoundHttpException)
+        {
+            return response()->view('errors.404', [], 404);
+        }
         return parent::render($request, $e);
     }
 }

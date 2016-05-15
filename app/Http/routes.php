@@ -26,6 +26,7 @@ Route::group(['middleware' => 'auth'], function () {
 
 Route::group(['middleware' => 'auth', 'prefix' => 'api'], function () {
 	Route::post('/interest', ['as' => 'api.interest.post', 'uses' => 'ApiController@addInterest']);
+	Route::post('/user/image', ['as' => 'api.user.image.post', 'uses' => 'ApiController@addImage']);
 	Route::post('event/{id}/comment', ['as' => 'api.comment.post', 'uses' => 'ApiController@postComment']);
 });
 

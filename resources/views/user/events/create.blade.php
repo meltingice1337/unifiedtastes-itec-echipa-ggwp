@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="{{asset('css/font-awesome.min.css')}}">
   <link rel="stylesheet" href="{{asset('css/hover-min.css')}}">
   <link rel="stylesheet" href="{{asset('css/bootstrap-datetimepicker.min.css')}}">
+  <link rel="stylesheet" href="{{asset('css/clockpicker.css')}}">
   <link rel="icon" type="image/png" href="{{asset('favicon.png')}}">
 </head>
 <body>
@@ -87,7 +88,7 @@
                 <input class="form-control" style="width:100%; border-radius:2px"type="text" name="description" value="{{old('description')}}"/>
               </div>
               <div class="form-group">
-                <label for="eventtitle">Interests</label>
+                <label for="eventtitle">Interests <i>(separated by comma eg: dota2, c#, food)</i></label>
                 <input class="form-control"style="width:100%; border-radius:2px"type="text" name="interests" value="{{old('interests')}}"/>
               </div>
               <div class="form-group">
@@ -99,14 +100,14 @@
                   <label for="eventtitle">Start time </label>
                 </p>
                 <span class="add-on">
-                  <input class="form-control"data-format="hh:mm" style="width:100%; border-radius:2px"type="text" name="start_time"/>
+                <input class="form-control clockpicker" data-format="hh:mm" style="width:100%; border-radius:2px"type="text" name="start_time"/>
                 </span>
               </div>
               <div id="end_time" style="margin-bottom:15px"class="input-append">
                 <p><label for="eventtitle">End time </label></p>
 
                 <span class="add-on">
-                  <input class="form-control" data-format="hh:mm" style="width:100%; border-radius:2px"type="text" name="end_time"/>
+                  <input class="form-control clockpicker" data-format="hh:mm" style="width:100%; border-radius:2px"type="text" name="end_time"/>
                 </span>
               </div>
               <div id="datepicker" class="input-append" style="margin-bottom:15px;">
@@ -129,16 +130,9 @@
 </div>
 
 @include('partials.footer')
+<script type="text/javascript" src="{{asset('js/clockpicker.js')}}"></script>
 <script type="text/javascript" src="{{asset('js/bootstrap-datetimepicker.min.js')}}"></script>
 <script type="text/javascript">
-  $('#start_time').datetimepicker({
-    pickDate: false,
-    pickSeconds: false
-  })
-  $('#end_time').datetimepicker({
-    pickDate: false,
-    pickSeconds: false
-  })
   $('#datepicker').datetimepicker({
     pickTime: false
   })
@@ -151,10 +145,12 @@
     $('input[name=icon]').val($(this).find('img:first').attr('data-icon'));
     $(this).find('img:first').addClass('image-selected');
   });
-  function getName(t)
-  {
+  $('.clockpicker').clockpicker({
+    placement: 'top',
+    align: 'left',
+    donetext: 'Done'
+  });
 
-  }
 </script>
 </body>
 </html>

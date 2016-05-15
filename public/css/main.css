@@ -195,6 +195,15 @@ body{
     -webkit-transform-origin:0 0;
   }
 }
+@media screen and (max-height: 280px){
+  .g-recaptcha{
+    margin-bottom: 10px;
+    transform:scale(0.77);
+    -webkit-transform:scale(0.77);
+    transform-origin:0 0;
+    -webkit-transform-origin:0 0;
+  }
+}
 .g-recaptcha{
   margin-bottom: 10px;
 }

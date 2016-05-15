@@ -13,7 +13,10 @@ class IndexController extends Controller
     function index()
     {
         if(!Auth::user())
-            return view('guest.index');
+            {
+                $events = Event::where('expired','0')->orderBy('start_time', 'asc')->take(12)->get();
+                return view('guest.index', compact('events'));
+            }
         else 
         {
 

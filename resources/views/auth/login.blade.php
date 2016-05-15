@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="{{asset('css/bootstrap.min.css')}}">
 	<link rel="stylesheet" href="{{asset('css/main.css')}}">
-	<link rel="icon" type="image/png" href="favicon2.png">
+  <link rel="icon" type="image/png" href="{{asset('favicon.png')}}">
 </head>
 <body>
 	<div class="col-md-12 banner">

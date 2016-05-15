@@ -10,7 +10,7 @@
 	<link rel="stylesheet" href="{{asset('css/simple-sidebar.css')}}">
 	<link rel="stylesheet" href="{{asset('css/font-awesome.min.css')}}">
 	<link rel="stylesheet" href="{{asset('css/hover-min.css')}}">
-	<link rel="icon" type="image/png" href="favicon2.png">
+	<link rel="icon" type="image/png" href="{{asset('favicon.png')}}">
 </head>
 <body>
 	<div class="col-md-12 banner">
@@ -27,8 +27,13 @@
 					<div class="panel-heading"><h2 style="text-align:center"> Profile Information</h2></div>
 					<div class="panel-body">
 						<div class="col-md-6">
-							<img src="images/profilepicture.jpg"style="border-radius: 50%; height:175px; margin:0 auto "class="img-responsive" />
+							<img src="{{asset($user->image)}}"style="border-radius: 50%; height:175px; margin:0 auto "class="img-responsive" />
+							<form enctype="multipart/form-data" action="{{route('api.user.image.post')}}" method="POST">
+								<input id="file" name="file" type="file" accept="image/*"/>
+								<input type="submit" value="Upload">
+							</form>
 						</div>
+
 						<div class="col-md-6">
 							<p>Name: {{$user->name}}</p>
 							<p>Member since: {{$user->created_at}}</p>
@@ -54,7 +59,6 @@
 					<div style="text-align:center">
 						<a href="" class="btn btn-default enterbutton">Proceed</a>
 					</div>
-					<div class="alert alert-danger" style="margin-top:10px" role="alert"><strong>Incorrect! </strong>Make sure you completed the task corectly. </div>
 				</div>
 			</div>
 		</div>
@@ -72,7 +76,6 @@
 				<div style="text-align:center">
 					<a href="" class="btn btn-default enterbutton">Proceed</a>
 				</div>
-				<div class="alert alert-danger" style="margin-top:10px" role="alert"><strong>Incorrect! </strong>Make sure you completed the task corectly. </div>
 			</div>
 		</div>
 	</div>
@@ -95,6 +98,7 @@
 
 		});
 	});
+	
 </script>
 </body>
 </html>

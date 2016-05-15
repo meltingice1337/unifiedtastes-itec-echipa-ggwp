@@ -10,12 +10,12 @@
     <link rel="stylesheet" href="{{asset('css/font-awesome.min.css')}}">
     <link rel="stylesheet" href="{{asset('css/hover-min.css')}}">
     <link rel="stylesheet" href="{{asset('css/simple-sidebar.css')}}">
-    <link rel="icon" type="image/png" href="favicon2.png">
+  <link rel="icon" type="image/png" href="{{asset('favicon.png')}}">
 </head>
 <body>
     <div class="col-md-12 banner">
         <div class="logo col-md-offset-5 col-md-2">
-            <img id="logo"class="img-responsive fixlogoindex"src="{{asset('images/logonoheader.png')}}"/>
+            <img id="logo" class="img-responsive fixlogoindex"src="{{asset('images/logonoheader.png')}}"/>
         </div>
     </div> 
     <div class="col-md-12">
@@ -93,7 +93,7 @@
                             </h5>
                             <img src="{{asset($comment->user->image)}}" style="margin:4px;border-radius: 50%; height:60px; display:inline"class="img-responsive"/>
                             <h3 style="text-align:center;display:inline; font-size:15px">{{$comment->text}}</h3>
-                            <h3 style="text-align:right;color:grey; font-size:15px">Postat la {{$comment->created_at}}</h3>
+                            <h3 style="text-align:right;color:grey; font-size:15px">Posted at {{$comment->created_at}}</h3>
 
                         </p>
                     </div>

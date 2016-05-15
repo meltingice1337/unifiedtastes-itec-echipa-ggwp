@@ -27,6 +27,7 @@ class Event extends Model
 	function parseInterests()
 	{
 		$result = '';
+
 		$interests = $this->interests;
 		if(count($interests) > 0)
 		{
@@ -43,6 +44,11 @@ class Event extends Model
 	function attending()
 	{
 		$stuff = 'going';
+		if(Auth::user())
+		{
+			if(Auth::user()->events->contains($this->id))
+				$stuff .= '. You are also going.';
+		}
 		if($this->expired)
 			$stuff = 'went';
 		if($this->users->count() == 1)
@@ -52,10 +58,16 @@ class Event extends Model
 	}
 
 	public function isOverLapping(){
-		foreach(Auth::user()->events as $e)
+		foreach(Auth::user()->events()->where('expired','0')->get() as $e)
 		{
-			if(strtotime($e->date.' '.$e->start_time ) >= strtotime($this->date.' '.$this->end_time) && $e->id != $this->id)
+			$his_start_time = strtotime($e->date.' '.$e->start_time );
+			$his_end_time = strtotime($e->date.' '.$e->end_time );
+
+			$my_start_time = strtotime($this->date.' '.$this->start_time);
+			$my_end_time = strtotime($this->date.' '.$this->end_time);
+			if( !($my_start_time > $his_end_time || $my_end_time < $his_start_time )){
 				return $e->name;
+			}
 		}
 		return false;
 	}

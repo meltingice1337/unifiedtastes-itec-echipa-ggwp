@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="{{asset('css/font-awesome.min.css')}}">
     <link rel="stylesheet" href="{{asset('css/hover-min.css')}}">
     <link rel="stylesheet" href="{{asset('css/simple-sidebar.css')}}">
-    <link rel="icon" type="image/png" href="favicon2.png">
+    <link rel="icon" type="image/png" href="{{asset('favicon.png')}}">
 </head>
 <body>
     <div class="col-md-12 banner">
@@ -69,6 +69,9 @@
                             <p style="display:inline">
                                 <button href="#" class="btn-responsive postcommentbutton btn btn-primary " role="button" id="post">Post</button>
                             </p>
+                            <div class="captcha-container">
+                                {!! app('captcha')->display(); !!}
+                            </div>
                         </div>
                     </form>
                     @foreach($comments as $comment)
@@ -79,7 +82,7 @@
                             </h5>
                             <img src="{{asset($comment->user->image)}}" style="margin:4px;border-radius: 50%; height:60px; display:inline"class="img-responsive"/>
                             <h3 style="text-align:center;display:inline; font-size:15px">{{$comment->text}}</h3>
-                            <h3 style="text-align:right;color:grey; font-size:15px">Postat la {{$comment->created_at}}</h3>
+                            <h3 style="text-align:right;color:grey; font-size:15px">Posted at {{$comment->created_at}}</h3>
 
                         </p>
                     </div>

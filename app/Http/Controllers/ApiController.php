@@ -8,10 +8,27 @@ use Illuminate\Http\Request;
 use App\User;
 use App\Comment;
 use App\Event;
+use Illuminate\Support\Facades\Input;
 
 class ApiController extends Controller
 {
 
+	function addImage(Request $request)
+	{
+		$this->validate($request, [
+			"file" => "image|max:3000"
+			]);
+		$file = Input::file('file');
+		$size = getimagesize($file);
+		if($size[0] != $size[1])
+			return redirect()->back();
+		$filename = substr(str_shuffle(MD5(microtime())), 0, 10).'.'.$file->getClientOriginalExtension();
+		$file->move('images', $filename);
+		Auth::user()->image = 'images/'.$filename;
+		Auth::user()->save();
+		return redirect()->back();
+
+	}
 	function addInterest(Request $request)
 	{
 		if(!$request->get('name'))
